@@ -45,6 +45,16 @@ build_make() {
     make -j ${threads} && make install -j ${threads}
 }
 
+replace_binaries() {
+    mv /usr/bin/make /usr/bin/make-${OLD_VER}
+    ln -fs /usr/local/bin/make-${NEW_VER} /etc/alternatives/make
+}
+
+update_alternatives() {
+    update-alternatives --install /usr/bin/make make /usr/bin/make-${OLD_VER} 10
+    update-alternatives --install /usr/bin/make make /usr/local/bin/make-${NEW_VER} 20
+}
+
 cleanup() {
     cd ../
     rm -rf make-${NEW_VER} make-${NEW_VER}.tar.bz2
@@ -53,10 +63,8 @@ cleanup() {
 main() {
     get_make
     build_make
-    mv /usr/bin/make /usr/bin/make-${OLD_VER}
-    ln -fs /usr/local/bin/make-${NEW_VER} /etc/alternatives/make
-    update-alternatives --install /usr/bin/make make /usr/bin/make-${OLD_VER} 10
-    update-alternatives --install /usr/bin/make make /usr/local/bin/make-${NEW_VER} 20
+    replace_binaries
+    update_alternatives
     cleanup
     echo "Done! Make version is: "$(get_make_version)
 }
