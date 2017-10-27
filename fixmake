@@ -26,11 +26,11 @@ fi
 # Return version number of make
 # (e.g. 4.1, 3.82, etc)
 ###############################
-chk_make_version_num() {
+get_make_version() {
     make -v | head -n1 | tail -c 5 | xargs
 }
 
-readonly OLD_VER=chk_make_version_num
+readonly OLD_VER=get_make_version
 readonly NEW_VER=3.81
 
 get_make() {
@@ -58,7 +58,7 @@ main() {
     update-alternatives --install /usr/bin/make make /usr/bin/make-${OLD_VER} 10
     update-alternatives --install /usr/bin/make make /usr/local/bin/make-${NEW_VER} 20
     cleanup
-    echo "Done! Make version is: "$(chk_make_version_num)
+    echo "Done! Make version is: "$(get_make_version)
 }
 
 main
